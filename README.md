@@ -12,6 +12,7 @@ pull/push, CI, merging and conflict resolution.
 - Operators `+ - * / % ^` (also `**`), brackets and unary minus
 - REST API plus a responsive web UI with full keyboard support
 - Resource limits (expression length, nesting depth, exponent size)
+- SQLite-backed calculation history, an `ans` variable (previous result) and a light/dark theme
 
 ## Architecture
 

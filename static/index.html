@@ -11,6 +11,7 @@
   <header class="topbar">
     <h1 class="brand">Calc<span>Lab</span></h1>
     <p class="tagline">Type or tap. Press Enter to calculate.</p>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch theme">&#9728;</button>
   </header>
 
   <main class="layout">
@@ -51,6 +52,14 @@
         <button class="key key-eq" data-action="equals">=</button>
       </div>
     </section>
+
+    <aside class="history" aria-label="Calculation history">
+      <div class="history-head">
+        <h2>History</h2>
+        <button class="link-btn" id="history-clear" type="button">Clear</button>
+      </div>
+      <ul class="history-list" id="history-list"></ul>
+    </aside>
   </main>
 
   <script src="app.js"></script>
