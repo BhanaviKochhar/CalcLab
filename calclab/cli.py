@@ -1,8 +1,8 @@
 """Command-line REPL: ``python -m calclab``."""
 from . import __version__
+from .display import format_result
 from .engine import evaluate
 from .errors import CalcError
-from .utils import format_number
 
 
 def main():
@@ -18,6 +18,6 @@ def main():
         if not line:
             continue
         try:
-            print(format_number(evaluate(line)))
+            print(format_result(evaluate(line)))
         except CalcError as exc:
             print(f"Error: {exc}")

@@ -15,7 +15,7 @@ import re
 from dataclasses import dataclass
 
 from .errors import EvalError, ParseError
-from .functions import CONSTANTS, FUNCTIONS
+from .functions import ANGLE_FUNCTIONS, CONSTANTS, FUNCTIONS
 
 MAX_LENGTH = 500
 MAX_EXPONENT = 1000
@@ -184,7 +184,10 @@ def _eval(node, ctx):
         if func is None:
             raise EvalError(f"Unknown function '{name}'")
         values = [_eval(arg, ctx) for arg in args]
-        return _call(func, name, values)
+        if name in ANGLE_FUNCTIONS and ctx.get("angle_mode") == "deg":
+            values = [math.radians(v) for v in values]
+        result = _call(func, name, values)
+        return round(result, 12) if name in ANGLE_FUNCTIONS else result
     _, op, left, right = node
     return _binary(op, _eval(left, ctx), _eval(right, ctx))
 
@@ -201,13 +204,18 @@ def _normalise(result):
     return result
 
 
-def evaluate(expression):
-    """Parse and evaluate an arithmetic expression and return an int or float."""
+def evaluate(expression, angle_mode="rad"):
+    """Parse and evaluate an arithmetic expression and return an int or float.
+
+    ``angle_mode`` ("rad" or "deg") controls how sin, cos and tan read their argument.
+    """
     if not isinstance(expression, str) or not expression.strip():
         raise ParseError("Empty expression")
     if len(expression) > MAX_LENGTH:
         raise ParseError("Expression is too long")
-    ctx = {}
+    if angle_mode not in ("rad", "deg"):
+        raise EvalError("angle_mode must be 'rad' or 'deg'")
+    ctx = {"angle_mode": angle_mode}
     try:
         tree = Parser(tokenize(expression)).parse()
         result = _eval(tree, ctx)
