@@ -12,7 +12,9 @@ pull/push, CI, merging and conflict resolution.
 - Operators `+ - * / % ^` (also `**`), brackets and unary minus
 - REST API plus a responsive web UI with full keyboard support
 - Resource limits (expression length, nesting depth, exponent size)
+- Resource limits (expression length, nesting depth, exponent size)
 - Scientific mode: `sqrt sin cos tan ln log fact`, constants `pi` and `e`, and a DEG/RAD switch
+- SQLite-backed calculation history, an `ans` variable (previous result) and a light/dark theme
 
 ## Architecture
 

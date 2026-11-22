@@ -17,6 +17,13 @@ def _tan(x):
     return result
 
 
+
+def _average(*values):
+    if not values:
+        raise ValueError("needs at least one value")
+    return sum(values) / len(values)
+
+
 FUNCTIONS = {
     "abs": abs,
     "sqrt": math.sqrt,
@@ -26,6 +33,10 @@ FUNCTIONS = {
     "ln": lambda x: math.log(x),
     "log": math.log10,
     "fact": _factorial,
+    "min": min,
+    "max": max,
+    "round": round,
+    "avg": _average,
 }
 
 # Functions whose argument is an angle (converted to radians in degree mode).

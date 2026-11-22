@@ -6,7 +6,7 @@ from calclab.api import create_app
 
 class TestApi(unittest.TestCase):
     def setUp(self):
-        self.client = create_app().test_client()
+        self.client = create_app(db_path=":memory:").test_client()
 
     def post(self, expression):
         return self.client.post("/api/evaluate", json={"expression": expression})

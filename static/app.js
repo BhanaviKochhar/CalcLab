@@ -69,6 +69,7 @@ async function calculate() {
       if (!state.expr) state.last += " " + data.display;
       state.error = "";
       state.fresh = true;
+      loadHistory();
     } else {
       state.error = data.error;
     }
@@ -116,3 +117,98 @@ document.addEventListener("keydown", (e) => {
 });
 
 render();
+
+/* ---------- History (stored in SQLite, served by /api/history) ---------- */
+
+const historyEls = {
+  list: document.getElementById("history-list"),
+  clear: document.getElementById("history-clear"),
+};
+
+async function loadHistory() {
+  try {
+    const res = await fetch("/api/history?limit=30");
+    const data = await res.json();
+    renderHistory(data.items || []);
+  } catch (err) {
+    // History is a convenience; the calculator still works without it.
+  }
+}
+
+function renderHistory(items) {
+  historyEls.list.replaceChildren();
+  if (!items.length) {
+    const empty = document.createElement("li");
+    empty.className = "history-empty";
+    empty.textContent = "No calculations yet.";
+    historyEls.list.append(empty);
+    return;
+  }
+  for (const item of items) {
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.className = "history-item";
+    btn.type = "button";
+    btn.dataset.expression = item.expression;
+    const expr = document.createElement("span");
+    expr.className = "h-expr";
+    expr.textContent = pretty(item.expression);
+    const result = document.createElement("span");
+    result.className = "h-res";
+    result.textContent = "= " + item.display;
+    btn.append(expr, result);
+    li.append(btn);
+    historyEls.list.append(li);
+  }
+}
+
+historyEls.list.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+  state.expr = btn.dataset.expression;
+  state.error = "";
+  state.fresh = false;
+  render();
+});
+
+historyEls.clear.addEventListener("click", async () => {
+  try {
+    await fetch("/api/history", { method: "DELETE" });
+  } finally {
+    loadHistory();
+  }
+});
+
+/* ---------- Theme ---------- */
+
+const themeToggle = document.getElementById("theme-toggle");
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  themeToggle.textContent = theme === "dark" ? "\u2600" : "\u263e";
+  themeToggle.setAttribute("aria-label", "Switch to " + (theme === "dark" ? "light" : "dark") + " theme");
+}
+
+function initTheme() {
+  let saved = null;
+  try {
+    saved = localStorage.getItem("calclab-theme");
+  } catch (err) {
+    // Storage can be unavailable (private mode); fall back to the OS preference.
+  }
+  const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+  applyTheme(saved || (prefersLight ? "light" : "dark"));
+}
+
+themeToggle.addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  applyTheme(next);
+  try {
+    localStorage.setItem("calclab-theme", next);
+  } catch (err) {
+    // Ignore: the theme simply will not persist.
+  }
+});
+
+initTheme();
+loadHistory();

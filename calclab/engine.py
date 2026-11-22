@@ -173,6 +173,9 @@ def _eval(node, ctx):
         return node[1]
     if kind == "const":
         name = node[1]
+        variables = ctx.get("variables", {})
+        if name in variables:
+            return variables[name]
         if name in CONSTANTS:
             return CONSTANTS[name]
         raise EvalError(f"Unknown name '{name}'")
@@ -204,18 +207,18 @@ def _normalise(result):
     return result
 
 
-def evaluate(expression, angle_mode="rad"):
+def evaluate(expression, angle_mode="rad", variables=None):
     """Parse and evaluate an arithmetic expression and return an int or float.
 
     ``angle_mode`` ("rad" or "deg") controls how sin, cos and tan read their argument.
-    """
+    ``variables`` optionally maps names to numbers, for example ``{"ans": 42}``.    """
     if not isinstance(expression, str) or not expression.strip():
         raise ParseError("Empty expression")
     if len(expression) > MAX_LENGTH:
         raise ParseError("Expression is too long")
     if angle_mode not in ("rad", "deg"):
         raise EvalError("angle_mode must be 'rad' or 'deg'")
-    ctx = {"angle_mode": angle_mode}
+    ctx = {"angle_mode": angle_mode, "variables": dict(variables or {})}
     try:
         tree = Parser(tokenize(expression)).parse()
         result = _eval(tree, ctx)
