@@ -1,15 +1,16 @@
 "use strict";
 
-const state = { expr: "", last: "", error: "", fresh: false, busy: false };
+const state = { expr: "", last: "", error: "", fresh: false, busy: false, angle: "rad" };
 
 const els = {
   expr: document.getElementById("expr"),
   last: document.getElementById("last"),
   error: document.getElementById("error"),
   keypad: document.getElementById("keypad"),
+  sci: document.getElementById("sci-keys"),
 };
 
-const INSERTABLE = /^[0-9+\-*\/^%().,]$/;
+const INSERTABLE = /^[0-9a-zA-Z+\-*\/^%().,]$/;
 const PRETTY = { "*": "\u00d7", "/": "\u00f7", "-": "\u2212" };
 
 function pretty(text) {
@@ -58,7 +59,7 @@ async function calculate() {
     const res = await fetch("/api/evaluate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ expression: state.expr }),
+      body: JSON.stringify({ expression: state.expr, angle_mode: state.angle }),
     });
     const data = await res.json();
     if (data.ok) {
@@ -86,6 +87,18 @@ els.keypad.addEventListener("click", (e) => {
   else if (btn.dataset.action === "back") backspace();
   else if (btn.dataset.action === "equals") calculate();
   else if (btn.dataset.key) press(btn.dataset.key);
+});
+
+els.sci.addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+  if (btn.id === "angle-toggle") {
+    state.angle = state.angle === "rad" ? "deg" : "rad";
+    btn.textContent = state.angle.toUpperCase();
+    btn.setAttribute("aria-pressed", String(state.angle === "deg"));
+  } else if (btn.dataset.key) {
+    press(btn.dataset.key);
+  }
 });
 
 document.addEventListener("keydown", (e) => {

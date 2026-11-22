@@ -156,6 +156,25 @@ body {
   font-weight: 700;
 }
 
+.sci {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sci .key {
+  height: 42px;
+  background: var(--key-op);
+  font-size: 0.95rem;
+}
+
+.sci .key-mode {
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
 @media (max-width: 480px) {
   .tagline {
     display: none;
