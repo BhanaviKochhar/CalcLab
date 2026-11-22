@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CalcLab - a fast, keyboard-friendly calculator">
+  <title>CalcLab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1 class="brand">Calc<span>Lab</span></h1>
+    <p class="tagline">Type or tap. Press Enter to calculate.</p>
+  </header>
+
+  <main class="layout">
+    <section class="calculator" aria-label="Calculator">
+      <div class="display" aria-live="polite">
+        <div class="display-last" id="last"></div>
+        <div class="display-main" id="expr">0</div>
+        <div class="display-error" id="error" role="alert"></div>
+      </div>
+
+      <div class="keypad" id="keypad">
+        <button class="key key-fn" data-action="clear" aria-label="Clear">C</button>
+        <button class="key key-fn" data-key="(">(</button>
+        <button class="key key-fn" data-key=")">)</button>
+        <button class="key key-fn" data-action="back" aria-label="Backspace">&#9003;</button>
+
+        <button class="key" data-key="7">7</button>
+        <button class="key" data-key="8">8</button>
+        <button class="key" data-key="9">9</button>
+        <button class="key key-op" data-key="/" aria-label="Divide">&divide;</button>
+
+        <button class="key" data-key="4">4</button>
+        <button class="key" data-key="5">5</button>
+        <button class="key" data-key="6">6</button>
+        <button class="key key-op" data-key="*" aria-label="Multiply">&times;</button>
+
+        <button class="key" data-key="1">1</button>
+        <button class="key" data-key="2">2</button>
+        <button class="key" data-key="3">3</button>
+        <button class="key key-op" data-key="-" aria-label="Subtract">&minus;</button>
+
+        <button class="key" data-key="0">0</button>
+        <button class="key" data-key=".">.</button>
+        <button class="key key-op" data-key="^" aria-label="Power">^</button>
+        <button class="key key-op" data-key="+" aria-label="Add">+</button>
+
+        <button class="key key-op" data-key="%" aria-label="Modulo">%</button>
+        <button class="key key-eq" data-action="equals">=</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
